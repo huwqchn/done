@@ -165,10 +165,8 @@ fn main() -> Result<(), io::Error> {
             Ok(KeyCode::Char(' ')) => {
                 let item = contents[current_tab_index].remove(current_select_item_index);
                 contents[current_tab_index ^ 1].push(item);
-                current_select_item_index = std::cmp::min(
-                    contents[current_tab_index].len() - 1,
-                    current_select_item_index,
-                );
+                current_select_item_index =
+                    std::cmp::min(contents[current_tab_index].len(), current_select_item_index);
             }
             Ok(KeyCode::Char('q')) => break,
             Ok(KeyCode::Char('c')) => {
