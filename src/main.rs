@@ -132,7 +132,9 @@ fn main() -> Result<(), io::Error> {
             if is_input {
                 let area = centered_rect(60, 10, f.size());
                 let inputbar = Block::default().title("Input").borders(Borders::ALL);
-                let input = Paragraph::new(input_content.as_ref())
+                // 在输入内容之后添加一个"|", 用来模拟光标
+                let input_with_cursor = format!("{}|", input_content);
+                let input = Paragraph::new(input_with_cursor)
                     .style(Style::default().fg(Color::White))
                     .block(inputbar)
                     .alignment(Alignment::Left);
