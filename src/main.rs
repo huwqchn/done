@@ -8,7 +8,7 @@ use tui::{
     backend::CrosstermBackend,
     layout::{Alignment, Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style},
-    text::{Span, Spans, Text},
+    text::{Span, Spans},
     widgets::{Block, Borders, List, ListItem, ListState, Paragraph, Tabs},
     Terminal,
 };
@@ -58,13 +58,13 @@ fn main() -> Result<(), io::Error> {
     });
 
     // some todo samples
-    let mut todos = vec![
+    let todos = vec![
         String::from("make a todo tui app"),
         String::from("learning rust"),
         String::from("make a cup of tea"),
     ];
 
-    let mut dones = vec![
+    let dones = vec![
         String::from("read a rust manual"),
         String::from("read arch linux wiki"),
     ];
@@ -182,7 +182,7 @@ fn main() -> Result<(), io::Error> {
                         % contents[current_tab_index].len();
             }
             Ok(KeyCode::Backspace) => {
-                if contents[current_tab_index].len() > 0 {
+                if !contents[current_tab_index].is_empty() {
                     contents[current_tab_index].remove(current_select_item_index);
                     current_select_item_index = std::cmp::min(
                         contents[current_tab_index].len() - 1,
