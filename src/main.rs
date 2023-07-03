@@ -143,8 +143,10 @@ fn main() -> Result<(), io::Error> {
         })?;
 
         match rx.recv() {
-            Ok(KeyCode::Backspace) if is_input && !input_content.is_empty() => {
-                input_content.pop();
+            Ok(KeyCode::Backspace) if is_input => {
+                if !input_content.is_empty() {
+                    input_content.pop();
+                }
             }
             Ok(KeyCode::Char(c)) if is_input => {
                 input_content.push(c);
