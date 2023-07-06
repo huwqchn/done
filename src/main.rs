@@ -57,22 +57,12 @@ fn main() -> Result<(), io::Error> {
         }
     });
 
-    // some todo samples
-    let todos = vec![
-        String::from("make a todo tui app"),
-        String::from("learning rust"),
-        String::from("make a cup of tea"),
-    ];
-
-    let dones = vec![
-        String::from("read a rust manual"),
-        String::from("read arch linux wiki"),
-    ];
-
     let mut current_select_item_index: usize = 0;
     let mut current_tab_index: usize = 0;
     let labels = ["Tados", "Dones"];
-    let mut contents = [todos, dones];
+    // contents is a array that contains two vector of String, first is todos and second is dones
+    let mut contents: [Vec<String>; 2] = [Vec::new(), Vec::new()];
+
     let mut is_input = false;
     let mut input_content = String::new();
 
@@ -162,33 +152,38 @@ fn main() -> Result<(), io::Error> {
                 input_content.clear();
                 is_input = false;
             }
-            Ok(KeyCode::Char(' ')) => {
+            Ok(KeyCode::Char(' ')) if !contents[current_tab_index].is_empty() => {
                 let item = contents[current_tab_index].remove(current_select_item_index);
                 contents[current_tab_index ^ 1].push(item);
-                current_select_item_index =
-                    std::cmp::min(contents[current_tab_index].len(), current_select_item_index);
+                let len = contents[current_tab_index].len();
+                current_select_item_index = if len == 0 {
+                    0
+                } else {
+                    std::cmp::min(
+                        contents[current_tab_index].len() - 1,
+                        current_select_item_index,
+                    )
+                }
             }
             Ok(KeyCode::Char('q')) => break,
             Ok(KeyCode::Char('c')) => {
                 terminal.clear()?;
             }
-            Ok(KeyCode::Char('e')) => {
+            Ok(KeyCode::Char('e')) if !contents[current_tab_index].is_empty() => {
                 current_select_item_index =
                     (current_select_item_index + 1) % contents[current_tab_index].len();
             }
-            Ok(KeyCode::Char('u')) => {
+            Ok(KeyCode::Char('i')) if !contents[current_tab_index].is_empty() => {
                 current_select_item_index =
                     (current_select_item_index + contents[current_tab_index].len() - 1)
                         % contents[current_tab_index].len();
             }
-            Ok(KeyCode::Backspace) => {
-                if !contents[current_tab_index].is_empty() {
-                    contents[current_tab_index].remove(current_select_item_index);
-                    current_select_item_index = std::cmp::min(
-                        contents[current_tab_index].len() - 1,
-                        current_select_item_index,
-                    );
-                }
+            Ok(KeyCode::Backspace) if !contents[current_tab_index].is_empty() => {
+                contents[current_tab_index].remove(current_select_item_index);
+                current_select_item_index = std::cmp::min(
+                    contents[current_tab_index].len() - 1,
+                    current_select_item_index,
+                );
             }
             Ok(KeyCode::Tab) => {
                 current_tab_index = (current_tab_index + 1) % labels.len();
